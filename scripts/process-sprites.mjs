@@ -55,21 +55,22 @@ async function processSprite(filename) {
   
   for (let row = 0; row < ROWS; row++) {
     for (let col = 0; col < COLS; col++) {
-      // Extract frame
-      const srcX = col * srcFrameW;
-      const srcY = row * srcFrameH;
+      // Extract frame with a 10px margin to safely clear all original grid lines
+      const margin = 10;
+      const srcX = col * srcFrameW + margin;
+      const srcY = row * srcFrameH + margin;
+      const cropW = srcFrameW - (margin * 2);
+      const cropH = srcFrameH - (margin * 2);
       
-      const frame = image.clone().crop({ x: srcX, y: srcY, w: srcFrameW, h: srcFrameH });
+      const frame = image.clone().crop({ x: srcX, y: srcY, w: cropW, h: cropH });
       
-      // Sample background from corners of this frame
+      // Sample background away from corners
       const samples = [
-        { x: 2, y: 2 },
-        { x: srcFrameW - 3, y: 2 },
-        { x: 2, y: srcFrameH - 3 },
-        { x: srcFrameW - 3, y: srcFrameH - 3 },
+        { x: 5, y: 5 },
+        { x: cropW - 6, y: 5 },
+        { x: cropW / 2, y: 5 },
       ];
       
-      // Get most common corner color as background
       const bgCounts = {};
       for (const s of samples) {
         const c = frame.getPixelColor(s.x, s.y);
@@ -79,33 +80,37 @@ async function processSprite(filename) {
         bgCounts[a] > bgCounts[b] ? a : b
       ));
       
-      // Extract RGB from background color
       const bgR = (bgColor >>> 24) & 0xFF;
       const bgG = (bgColor >>> 16) & 0xFF;
       const bgB = (bgColor >>> 8) & 0xFF;
       
-      // Only remove if background is actually dark (avoid removing white gi)
-      const isDarkBg = bgR < 80 && bgG < 80 && bgB < 80;
+      // Balanced tolerance for the red character
+      const tolerance = 30; 
+      const bitmap = frame.bitmap;
       
-      if (isDarkBg) {
-        // Remove background with tolerance
-        const tolerance = 25;
-        const bitmap = frame.bitmap;
+      for (let i = 0; i < bitmap.data.length; i += 4) {
+        const r = bitmap.data[i];
+        const g = bitmap.data[i + 1];
+        const b = bitmap.data[i + 2];
         
-        for (let i = 0; i < bitmap.data.length; i += 4) {
-          const r = bitmap.data[i];
-          const g = bitmap.data[i + 1];
-          const b = bitmap.data[i + 2];
-          
-          // Only remove dark pixels that match the background
-          const isMatchingBg = Math.abs(r - bgR) <= tolerance &&
-                               Math.abs(g - bgG) <= tolerance &&
-                               Math.abs(b - bgB) <= tolerance;
-          const isDarkPixel = r < 80 && g < 80 && b < 80;
-          
-          if (isMatchingBg && isDarkPixel) {
-            bitmap.data[i + 3] = 0;
-            totalRemoved++;
+        if (Math.abs(r - bgR) <= tolerance &&
+            Math.abs(g - bgG) <= tolerance &&
+            Math.abs(b - bgB) <= tolerance) {
+          bitmap.data[i + 3] = 0;
+          totalRemoved++;
+        }
+      }
+
+      // Deeper perimeter cleaning to catch remnants
+      const edge = 5;
+      for (let fy = 0; fy < cropH; fy++) {
+        for (let fx = 0; fx < cropW; fx++) {
+          if (fx < edge || fx >= cropW - edge || fy < edge || fy >= cropH - edge) {
+            const idx = (fy * cropW + fx) * 4;
+            // Force clear anything even slightly dark on the extreme edges
+            if (bitmap.data[idx] < 60 && bitmap.data[idx+1] < 60 && bitmap.data[idx+2] < 60) {
+              bitmap.data[idx + 3] = 0;
+            }
           }
         }
       }
@@ -120,20 +125,22 @@ async function processSprite(filename) {
     }
   }
   
-  console.log(`  Removed ${totalRemoved} background pixels`);
-  console.log(`  Output: ${OUT_WIDTH}x${OUT_HEIGHT}`);
-  
   await output.write(outputPath);
-  console.log(`  Saved: ${outputPath}`);
+  console.log(`  Processed: ${filename}`);
 }
 
 async function main() {
-  console.log('=== Sprite Sheet Processor v6 ===\n');
-  console.log(`Output grid: ${COLS}x${ROWS}, frames: ${OUT_FRAME_WIDTH}x${OUT_FRAME_HEIGHT}\n`);
-  
+  console.log('=== Sprite Sheet Processor v6.3 ===\n');
   try {
-    await processSprite('fighter_p1.png');
+    // Process P2
     await processSprite('fighter_p2.png');
+    
+    // Copy to P1
+    const p1Path = join(SPRITES_DIR, 'fighter_p1_clean.png');
+    const p2Path = join(SPRITES_DIR, 'fighter_p2_clean.png');
+    const p2Image = await Jimp.read(p2Path);
+    await p2Image.write(p1Path);
+    
     console.log('\n=== Done! ===');
   } catch (error) {
     console.error('Error:', error);
