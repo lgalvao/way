@@ -5,10 +5,10 @@ import { AttackData, DirectionVector } from '../types';
  * Vector format: "x,y" where holding toward opponent is positive X
  */
 export const ATTACKS: Record<DirectionVector, AttackData> = {
-  // Neutral - Jab
+  // Neutral - Jab (uses punch animation)
   '0,0': {
     name: 'Jab',
-    animationKey: 'atk_jab',
+    animationKey: 'punch',
     hitboxType: 'mid',
     startup: 4,
     active: 3,
@@ -24,7 +24,7 @@ export const ATTACKS: Record<DirectionVector, AttackData> = {
   // Up - High Kick
   '0,-1': {
     name: 'High Kick',
-    animationKey: 'atk_high_kick',
+    animationKey: 'highkick',
     hitboxType: 'high',
     startup: 8,
     active: 4,
@@ -37,10 +37,10 @@ export const ATTACKS: Record<DirectionVector, AttackData> = {
     hitboxSize: { width: 100, height: 80 },
   },
 
-  // Forward+Up - Flying Kick
+  // Forward+Up - Flying Kick (uses highkick)
   '1,-1': {
     name: 'Flying Kick',
-    animationKey: 'atk_flying_kick',
+    animationKey: 'highkick',
     hitboxType: 'mid',
     startup: 10,
     active: 6,
@@ -56,7 +56,7 @@ export const ATTACKS: Record<DirectionVector, AttackData> = {
   // Forward - Mid Punch
   '1,0': {
     name: 'Mid Punch',
-    animationKey: 'atk_mid_punch',
+    animationKey: 'punch',
     hitboxType: 'mid',
     startup: 6,
     active: 4,
@@ -72,7 +72,7 @@ export const ATTACKS: Record<DirectionVector, AttackData> = {
   // Forward+Down - Low Sweep
   '1,1': {
     name: 'Low Sweep',
-    animationKey: 'atk_low_sweep',
+    animationKey: 'sweep',
     hitboxType: 'low',
     startup: 10,
     active: 5,
@@ -88,7 +88,7 @@ export const ATTACKS: Record<DirectionVector, AttackData> = {
   // Down - Crouch Punch
   '0,1': {
     name: 'Crouch Punch',
-    animationKey: 'atk_crouch_punch',
+    animationKey: 'punch',
     hitboxType: 'low',
     startup: 5,
     active: 3,
@@ -101,10 +101,10 @@ export const ATTACKS: Record<DirectionVector, AttackData> = {
     hitboxSize: { width: 80, height: 50 },
   },
 
-  // Back - Back Kick
+  // Back - Back Kick (uses highkick)
   '-1,0': {
     name: 'Back Kick',
-    animationKey: 'atk_back_kick',
+    animationKey: 'highkick',
     hitboxType: 'mid',
     startup: 12,
     active: 6,
@@ -120,7 +120,7 @@ export const ATTACKS: Record<DirectionVector, AttackData> = {
   // Back+Up - Jumping Back Kick
   '-1,-1': {
     name: 'Jumping Back Kick',
-    animationKey: 'atk_jump_back',
+    animationKey: 'highkick',
     hitboxType: 'high',
     startup: 8,
     active: 5,
@@ -136,7 +136,7 @@ export const ATTACKS: Record<DirectionVector, AttackData> = {
   // Back+Down - Low Back Sweep
   '-1,1': {
     name: 'Low Back Sweep',
-    animationKey: 'atk_low_back',
+    animationKey: 'sweep',
     hitboxType: 'low',
     startup: 14,
     active: 4,

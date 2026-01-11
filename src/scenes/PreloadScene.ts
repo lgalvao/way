@@ -43,18 +43,17 @@ export class PreloadScene extends Phaser.Scene {
       percentText.destroy();
     });
 
-    // Load sprite sheets (cleaned with transparent backgrounds)
-    // Sheets: 514x518 with 2px spacing between frames
-    // Grid: 3x4 -> 170x128 per frame
-    this.load.spritesheet('fighter_p1', 'assets/sprites/fighter_p1_clean.png', {
+    // Load sprite sheets (use P2 sprites for both - P1 has rendering issues)
+    // Sheets: 686x514 with 4x3 grid, 170x170 per frame, 2px spacing
+    this.load.spritesheet('fighter_p1', 'assets/sprites/fighter_p2_clean.png', {
       frameWidth: 170,
-      frameHeight: 128,
+      frameHeight: 170,
       spacing: 2,
     });
 
     this.load.spritesheet('fighter_p2', 'assets/sprites/fighter_p2_clean.png', {
       frameWidth: 170,
-      frameHeight: 128,
+      frameHeight: 170,
       spacing: 2,
     });
 
@@ -73,11 +72,10 @@ export class PreloadScene extends Phaser.Scene {
   }
 
   private createFighterAnimations(key: string): void {
-    // Frame mapping based on the generated sprite sheets (3x4 grid):
-    // Row 0: 0=Idle, 1=Walk, 2=Crouch
-    // Row 1: 3=Jump, 4=HighKick, 5=Punch  
-    // Row 2: 6=Sweep, 7=Block, (8 extra)
-    // Row 3: (9, 10, 11 extra poses)
+    // Frame mapping based on the sprite sheets (4x3 grid):
+    // Row 0: 0=Idle, 1=Walk, 2=Crouch, 3=Jump
+    // Row 1: 4=HighKick, 5=Punch, 6=Sweep, 7=Block
+    // Row 2: 8-11 = extra poses
 
     this.anims.create({
       key: `${key}_idle`,

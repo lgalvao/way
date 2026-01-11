@@ -51,13 +51,13 @@ export class Fighter extends Phaser.GameObjects.Container {
     this.sprite.setScale(1.2); 
     this.add(this.sprite);
 
-    // Create hurtbox (slightly smaller than body)
+    // Create hurtbox (slightly smaller than body) - invisible in production
     this.hurtbox = scene.add.rectangle(
       x, y - FIGHTER.HURTBOX_HEIGHT / 2,
       FIGHTER.HURTBOX_WIDTH, FIGHTER.HURTBOX_HEIGHT,
-      0x00ff00, 0.3
+      0x00ff00, 0  // Alpha 0 = invisible
     );
-    this.hurtbox.setStrokeStyle(2, 0x00ff00);
+    // this.hurtbox.setStrokeStyle(2, 0x00ff00); // Uncomment for debug
 
     // Add to scene and enable physics
     scene.add.existing(this);
@@ -164,15 +164,16 @@ export class Fighter extends Phaser.GameObjects.Container {
     const offsetX = attack.hitboxOffset.x * this.facing;
     const offsetY = attack.hitboxOffset.y;
 
+    // Hitbox is invisible in production (collision still works via getHitboxBounds)
     this.hitboxGraphics = this.scene.add.rectangle(
       this.x + offsetX,
       this.y + offsetY - FIGHTER.HEIGHT / 2,
       attack.hitboxSize.width,
       attack.hitboxSize.height,
       0xff0000,
-      0.4
+      0  // Alpha 0 = invisible
     );
-    this.hitboxGraphics.setStrokeStyle(2, 0xff0000);
+    // this.hitboxGraphics.setStrokeStyle(2, 0xff0000); // Uncomment for debug
   }
 
   /**
@@ -542,6 +543,11 @@ class AttackState implements State<Fighter> {
   enter(): void {
     this.owner.attackFrame = 0;
     this.owner.body.setVelocityX(0);
+    
+    // Play the attack animation
+    if (this.owner.currentAttack) {
+      this.owner.playAnimation(this.owner.currentAttack.animationKey);
+    }
   }
 
   update(_input: InputState, _delta: number): void {
