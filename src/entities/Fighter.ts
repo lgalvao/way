@@ -57,7 +57,7 @@ export class Fighter extends Phaser.GameObjects.Container {
       FIGHTER.HURTBOX_WIDTH, FIGHTER.HURTBOX_HEIGHT,
       0x00ff00, 0  // Alpha 0 = invisible
     );
-    // this.hurtbox.setStrokeStyle(2, 0x00ff00); // Uncomment for debug
+    this.hurtbox.setStrokeStyle(2, 0x00ff00); // Debug: Visible hurtbox
 
     // Add to scene and enable physics
     scene.add.existing(this);
@@ -115,6 +115,9 @@ export class Fighter extends Phaser.GameObjects.Container {
    */
   startAttack(dirX: -1 | 0 | 1, dirY: -1 | 0 | 1): void {
     this.currentAttack = getAttack(dirX, dirY);
+    if (this.currentAttack) {
+      console.log(`P${this.playerId} Attack: ${this.currentAttack.name} [${dirX}, ${dirY}]`);
+    }
     this.attackFrame = 0;
     this.stateMachine.setState('ATTACK');
   }
@@ -173,7 +176,7 @@ export class Fighter extends Phaser.GameObjects.Container {
       0xff0000,
       0  // Alpha 0 = invisible
     );
-    // this.hitboxGraphics.setStrokeStyle(2, 0xff0000); // Uncomment for debug
+    this.hitboxGraphics.setStrokeStyle(2, 0xff0000); // Debug: Visible hitbox
   }
 
   /**
@@ -387,10 +390,9 @@ class CrouchState implements State<Fighter> {
   }
 
   update(input: InputState, _delta: number): void {
-    // Check for attack (only low attacks while crouching)
+    // Check for attack input FIRST (allow all directions)
     if (input.actionJustPressed) {
-      // Force low attack direction
-      this.owner.startAttack(input.direction.x, 1);
+      this.owner.startAttack(input.direction.x, input.direction.y);
       return;
     }
 
@@ -426,7 +428,13 @@ class JumpState implements State<Fighter> {
     this.owner.playAnimation('jump');
   }
 
-  update(_input: InputState, _delta: number): void {
+  update(input: InputState, _delta: number): void {
+    // Allow rising air attacks
+    if (input.actionJustPressed) {
+      this.owner.startAttack(input.direction.x, input.direction.y);
+      return;
+    }
+
     // Transition to airborne once we start falling
     if (this.owner.body.velocity.y >= 0) {
       this.owner.stateMachine.setState('AIRBORNE');
