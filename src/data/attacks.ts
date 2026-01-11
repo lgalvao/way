@@ -5,10 +5,10 @@ import { AttackData, DirectionVector } from '../types';
  * Vector format: "x,y" where holding toward opponent is positive X
  */
 export const ATTACKS: Record<DirectionVector, AttackData> = {
-  // Neutral - Jab (uses punch animation)
+  // Neutral - Mid Punch (Frame 5)
   '0,0': {
-    name: 'Jab',
-    animationKey: 'punch',
+    name: 'Mid Punch',
+    animationKey: 'mid_punch',
     hitboxType: 'mid',
     startup: 4,
     active: 3,
@@ -21,10 +21,10 @@ export const ATTACKS: Record<DirectionVector, AttackData> = {
     hitboxSize: { width: 80, height: 60 },
   },
 
-  // Up - High Kick
+  // Up - High Kick (Frame 4)
   '0,-1': {
     name: 'High Kick',
-    animationKey: 'highkick',
+    animationKey: 'high_kick',
     hitboxType: 'high',
     startup: 8,
     active: 4,
@@ -37,10 +37,10 @@ export const ATTACKS: Record<DirectionVector, AttackData> = {
     hitboxSize: { width: 100, height: 80 },
   },
 
-  // Forward+Up - Flying Kick (uses highkick)
+  // Forward+Up - Flying Kick (Frame 4 but with movement)
   '1,-1': {
     name: 'Flying Kick',
-    animationKey: 'highkick',
+    animationKey: 'high_kick',
     hitboxType: 'mid',
     startup: 10,
     active: 6,
@@ -53,11 +53,11 @@ export const ATTACKS: Record<DirectionVector, AttackData> = {
     hitboxSize: { width: 120, height: 80 },
   },
 
-  // Forward - Mid Punch
+  // Forward - High Punch (Frame 9)
   '1,0': {
-    name: 'Mid Punch',
-    animationKey: 'punch',
-    hitboxType: 'mid',
+    name: 'High Punch',
+    animationKey: 'high_punch',
+    hitboxType: 'high',
     startup: 6,
     active: 4,
     recovery: 10,
@@ -65,11 +65,11 @@ export const ATTACKS: Record<DirectionVector, AttackData> = {
     hitstun: 16,
     blockstun: 8,
     knockback: 60,
-    hitboxOffset: { x: 70, y: -10 },
+    hitboxOffset: { x: 70, y: -40 },
     hitboxSize: { width: 90, height: 70 },
   },
 
-  // Forward+Down - Low Sweep
+  // Forward+Down - Low Sweep (Frame 6)
   '1,1': {
     name: 'Low Sweep',
     animationKey: 'sweep',
@@ -85,10 +85,10 @@ export const ATTACKS: Record<DirectionVector, AttackData> = {
     hitboxSize: { width: 120, height: 60 },
   },
 
-  // Down - Crouch Punch
+  // Down - Low Punch (Frame 8)
   '0,1': {
-    name: 'Crouch Punch',
-    animationKey: 'punch',
+    name: 'Low Punch',
+    animationKey: 'low_punch',
     hitboxType: 'low',
     startup: 5,
     active: 3,
@@ -101,10 +101,10 @@ export const ATTACKS: Record<DirectionVector, AttackData> = {
     hitboxSize: { width: 80, height: 50 },
   },
 
-  // Back - Back Kick (uses highkick)
+  // Back - Mid Kick (Frame 10)
   '-1,0': {
-    name: 'Back Kick',
-    animationKey: 'highkick',
+    name: 'Mid Kick',
+    animationKey: 'mid_kick',
     hitboxType: 'mid',
     startup: 12,
     active: 6,
@@ -113,14 +113,14 @@ export const ATTACKS: Record<DirectionVector, AttackData> = {
     hitstun: 18,
     blockstun: 10,
     knockback: 100,
-    hitboxOffset: { x: 60, y: 0 },
+    hitboxOffset: { x: 70, y: 20 },
     hitboxSize: { width: 100, height: 80 },
   },
 
-  // Back+Up - Jumping Back Kick
+  // Back+Up - Back High Kick (Frame 4)
   '-1,-1': {
-    name: 'Jumping Back Kick',
-    animationKey: 'highkick',
+    name: 'Back Kick',
+    animationKey: 'high_kick',
     hitboxType: 'high',
     startup: 8,
     active: 5,
@@ -133,10 +133,10 @@ export const ATTACKS: Record<DirectionVector, AttackData> = {
     hitboxSize: { width: 90, height: 70 },
   },
 
-  // Back+Down - Low Back Sweep
+  // Back+Down - Low Back Kick (Frame 10)
   '-1,1': {
-    name: 'Low Back Sweep',
-    animationKey: 'sweep',
+    name: 'Low Back Kick',
+    animationKey: 'mid_kick',
     hitboxType: 'low',
     startup: 14,
     active: 4,
@@ -145,7 +145,7 @@ export const ATTACKS: Record<DirectionVector, AttackData> = {
     hitstun: 22,
     blockstun: 12,
     knockback: 90,
-    hitboxOffset: { x: 40, y: 60 },
+    hitboxOffset: { x: 40, y: 40 },
     hitboxSize: { width: 110, height: 50 },
   },
 };

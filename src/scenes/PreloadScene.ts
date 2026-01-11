@@ -57,8 +57,11 @@ export class PreloadScene extends Phaser.Scene {
       spacing: 2,
     });
 
-    // Load background
+    // Load backgrounds
     this.load.image('bg_dojo', 'assets/backgrounds/dojo.png');
+    this.load.image('bg_mountain', 'assets/backgrounds/mountain.png');
+    this.load.image('bg_pagoda', 'assets/backgrounds/pagoda.png');
+    this.load.image('bg_beach', 'assets/backgrounds/beach.png');
   }
 
   create(): void {
@@ -74,8 +77,8 @@ export class PreloadScene extends Phaser.Scene {
   private createFighterAnimations(key: string): void {
     // Frame mapping based on the sprite sheets (4x3 grid):
     // Row 0: 0=Idle, 1=Walk, 2=Crouch, 3=Jump
-    // Row 1: 4=HighKick, 5=Punch, 6=Sweep, 7=Block
-    // Row 2: 8-11 = extra poses
+    // Row 1: 4=HighKick, 5=MidPunch, 6=Sweep, 7=Block
+    // Row 2: 8=LowPunch, 9=HighPunch, 10=MidKick, 11=Impact/Ready
 
     this.anims.create({
       key: `${key}_idle`,
@@ -102,13 +105,13 @@ export class PreloadScene extends Phaser.Scene {
     });
 
     this.anims.create({
-      key: `${key}_highkick`,
+      key: `${key}_high_kick`,
       frames: [{ key, frame: 4 }],
       frameRate: 1,
     });
 
     this.anims.create({
-      key: `${key}_punch`,
+      key: `${key}_mid_punch`,
       frames: [{ key, frame: 5 }],
       frameRate: 1,
     });
@@ -122,6 +125,30 @@ export class PreloadScene extends Phaser.Scene {
     this.anims.create({
       key: `${key}_block`,
       frames: [{ key, frame: 7 }],
+      frameRate: 1,
+    });
+
+    this.anims.create({
+      key: `${key}_low_punch`,
+      frames: [{ key, frame: 8 }],
+      frameRate: 1,
+    });
+
+    this.anims.create({
+      key: `${key}_high_punch`,
+      frames: [{ key, frame: 9 }],
+      frameRate: 1,
+    });
+
+    this.anims.create({
+      key: `${key}_mid_kick`,
+      frames: [{ key, frame: 10 }],
+      frameRate: 1,
+    });
+
+    this.anims.create({
+      key: `${key}_impact`,
+      frames: [{ key, frame: 11 }],
       frameRate: 1,
     });
   }

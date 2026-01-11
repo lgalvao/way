@@ -596,6 +596,7 @@ class HitstunState implements State<Fighter> {
 
   enter(): void {
     this.owner.flashHit();
+    this.owner.playAnimation('impact');
   }
 
   update(_input: InputState, _delta: number): void {

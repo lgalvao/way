@@ -58,10 +58,16 @@ export class FightScene extends Phaser.Scene {
   private ground!: Phaser.Physics.Arcade.StaticGroup;
 
 
+  private bgSprite!: Phaser.GameObjects.Image;
+  private backgroundKeys = ['bg_dojo', 'bg_mountain', 'bg_pagoda', 'bg_beach'];
+
   private createBackground(): void {
-    // Add dojo background image (scaled to fit)
-    const bg = this.add.image(GAME.WIDTH / 2, GAME.HEIGHT / 2, 'bg_dojo');
-    bg.setDisplaySize(GAME.WIDTH, GAME.HEIGHT);
+    // Pick a random background
+    const randomBg = Phaser.Utils.Array.GetRandom(this.backgroundKeys);
+    
+    // Add background image (scaled to fit)
+    this.bgSprite = this.add.image(GAME.WIDTH / 2, GAME.HEIGHT / 2, randomBg);
+    this.bgSprite.setDisplaySize(GAME.WIDTH, GAME.HEIGHT);
 
     // Ground line (visual)
     this.add.line(
@@ -77,7 +83,6 @@ export class FightScene extends Phaser.Scene {
     // Physics Ground
     this.ground = this.physics.add.staticGroup();
     // Create a transparent ground block at GROUND_Y
-    // It matches the visual line position. Origin 0.5, 0 puts top at GROUND_Y
     const groundRect = this.add.rectangle(GAME.WIDTH/2, PHYSICS.GROUND_Y + 20, GAME.WIDTH, 40, 0x000000, 0);
     this.ground.add(groundRect);
   }
@@ -305,6 +310,13 @@ export class FightScene extends Phaser.Scene {
     
     this.showCenterText(`PLAYER ${winner} WINS!`, 2000);
 
+    // Play victory animation for the winner
+    if (winner === 1) {
+      this.player1.playAnimation('impact');
+    } else {
+      this.player2.playAnimation('impact');
+    }
+
     this.time.delayedCall(2500, () => {
       this.checkMatchEnd();
     });
@@ -320,6 +332,11 @@ export class FightScene extends Phaser.Scene {
       this.time.delayedCall(4500, () => {
         this.roundWins = { p1: 0, p2: 0 };
         this.currentRound = 1;
+        
+        // Change background for new match
+        const newBg = Phaser.Utils.Array.GetRandom(this.backgroundKeys);
+        this.bgSprite.setTexture(newBg);
+        
         this.player1.resetPosition();
         this.player2.resetPosition();
         this.startRound();
